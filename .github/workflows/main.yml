@@ -1,29 +1,30 @@
-name: 'issue2readme'
+name: "rewriteReadme"
 on:
-  workflow_dispatch:
   issues:
-    types: [milestoned]
-    # types: [opened, edited]
-#   issue_comment:
-#     types: [created, edited]
-concurrency:
-  # just run one action at a time
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
+    types: [labeled, unlabeled]
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2 #  Check out the repository, so it can read the files it and do other operations
-      - name: Generate README
-        uses: bxb100/issueblog@main # Prefer to use the latest version
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Auto Issue List in README
+        uses: zhang0ZGC/issue-list-readme@master
         with:
-          # Define the README.md header content
-          md_header: |
-            ## 简介
-            使用Github Issues写博客,[RSS Feed](https://raw.githubusercontent.com/cloudswave/blog/master/feed.xml)
-            ,同步发布到[EthanZhu's Blog](https://cloudswave.github.io)和CSDN
-          blog_author: "EthanZhu"
-          recent_title: "最近更新"
-          top_title: "置顶"
-          links_title: "链接"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          pattern: "<!-- issueTable -->"
+          state: "open"
+          labels: "BLOG"
+          creator: "wangpinyuan"
+          per_page: 10
+      - name: add-and-commit
+        uses: EndBug/add-and-commit@v4
+        with:
+          message: README.md has been re-written
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
