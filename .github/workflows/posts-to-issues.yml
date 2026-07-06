@@ -1,0 +1,33 @@
+name: Posts to Issues
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_posts/*.md'
+
+jobs:
+  create-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Issues from Posts
+        run: |
+          for file in _posts/*.md; do
+            # 解析 frontmatter 获取 title 和 labels
+            title=$(awk '/^---$/ && !t {t=1; next} t && /^---$/{exit} /^title:/{sub(/^title: */,""); print}' "$file")
+            labels=$(awk '/^---$/ && !l {l=1; next} l && /^---$/{exit} /^labels:/{sub(/^labels: */,""); print}' "$file")
+
+            # 提取 frontmatter 之后的内容作为 body
+            body=$(awk '/^---$/ && !started {started=1; next} started && /^---$/{next} {print}' "$file")
+
+            # 创建 issue
+            if [ -n "$labels" ]; then
+              gh issue create --title "$title" --body "$body" --label "$labels"
+            else
+              gh issue create --title "$title" --body "$body"
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
