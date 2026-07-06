@@ -7,14 +7,18 @@ on:
       - '_posts/*.md'
 
 jobs:
-  create-issues:
+  sync-issues:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create Issues from Posts
+      - name: Sync Posts to Issues
         run: |
           for file in _posts/*.md; do
+            # 从文件名提取 issue 编号
+            filename=$(basename "$file")
+            number=$(echo "$filename" | grep -oE '^[0-9]+')
+
             # 解析 frontmatter 获取 title 和 labels
             title=$(awk '/^---$/ && !t {t=1; next} t && /^---$/{exit} /^title:/{sub(/^title: */,""); print}' "$file")
             labels=$(awk '/^---$/ && !l {l=1; next} l && /^---$/{exit} /^labels:/{sub(/^labels: */,""); print}' "$file")
@@ -22,11 +26,28 @@ jobs:
             # 提取 frontmatter 之后的内容作为 body
             body=$(awk '/^---$/ && !started {started=1; next} started && /^---$/{next} {print}' "$file")
 
-            # 创建 issue
-            if [ -n "$labels" ]; then
-              gh issue create --title "$title" --body "$body" --label "$labels"
+            if [ -z "$number" ] || [ -z "$title" ]; then
+              echo "跳过: $filename (缺少编号或标题)"
+              continue
+            fi
+
+            # 检查 issue 是否存在
+            if gh issue view "$number" &>/dev/null; then
+              # 存在则更新
+              if [ -n "$labels" ]; then
+                gh issue edit "$number" --title "$title" --body "$body" --label "$labels"
+              else
+                gh issue edit "$number" --title "$title" --body "$body"
+              fi
+              echo "更新 issue #$number: $title"
             else
-              gh issue create --title "$title" --body "$body"
+              # 不存在则创建
+              if [ -n "$labels" ]; then
+                gh issue create --title "$title" --body "$body" --label "$labels"
+              else
+                gh issue create --title "$title" --body "$body"
+              fi
+              echo "创建 issue: $title"
             fi
           done
         env:
