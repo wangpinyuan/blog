@@ -122,3 +122,91 @@ XML
 J2EE
 Tomcat
 Servlet
+cookie
+session
+servertContext
+xml配置文件，默认首页/全局变量/404/500页面
+web应用war包发布，tomcat默认路径修改
+
+## 第九章 Java 数据库开发
+JDBC
+- 加载驱动 Class.forName
+- 创建链接 DriverManager
+- 创建statement
+- 执行sql语句
+- 关闭连接，释放资源
+
+Druid数据库连接池
+c3p0数据库连接池
+Common DBUtils工具类
+
+## 第十章 Maven
+maven
+lambda表达式
+stream流
+- 创建流
+  - Arrays.stream()
+  - List.stream() // 基于集合创建流
+  - Set.stream()
+  - Stream.of()    // 基于数组创建流
+  - Stream.generate() // 基于生成器创建流
+  - Stream.iterate()  // 基于迭代器创建流
+- 操作流
+  - filter()
+  - map()
+  - flatMap()
+  - sorted()
+  - distinct()
+  - collect()
+
+## 第十一章 MyBatis
+简化JDBC与数据库交互
+mybatis-config.xml放置配置信息
+SqlsessionFactory
+MybatisUtils工具类
+查询
+- 创建实体类
+- Mapper XML
+- SQL语句
+- 驼峰命名映射
+- 新增mapper
+- sqlSession执行SQL
+mybatis日志
+mybatis动态SQL
+mybatis二级缓存
+pagehelper分页插件
+注解开发
+
+## 第十二章 Spring
+### 1. IoC
+1.XML配置注入
+- 基于构造方法实例化
+- 基于静态工厂
+- 基于工厂实例方法
+bean scope
+2.组件类型注解
+3.java-config.xml
+### 2.AOP
+joinpoint方法：
+getTarget()
+getSignature()
+getArgs()
+
+### 3.spring JDBC
+jdbc template
+- 配置
+- 查询
+  - jdbcTemplate.query();
+  - jdbcTemplate.queryForObject();
+  - jdbcTemplate.queryForList();
+  - jdbcTemplate.queryForMap(); 
+  - jdbcTemplate.queryForBean();
+- 更新 
+  - jdbcTemplate.update();
+
+编程式事物
+jdbcTemplate通过 transactionManager实现事物提交/回滚
+
+声明式事物
+- 配置 transactionManager
+- 注解 @Transactional
