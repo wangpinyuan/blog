@@ -1,17 +1,58 @@
-name: Blog Posts
+name: Update Blog README
 
 on:
-  # Run workflow automatically
-  schedule:
-    # Runs every hour, on the hour
-    - cron: "0 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - '_posts/**/*.md'
+      - 'scripts/generate_readme.py'
+      - 'scripts/requirements.txt'
+      - '.github/workflows/main.yml'
+      - 'README.md'
+  workflow_dispatch:
+
+concurrency:
+  group: blog-readme-main
+  cancel-in-progress: false
 
 jobs:
-  update-readme-with-blog:
-    name: Update this repo's README with latest blog posts
+  update-readme:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: wangpinyuan/blog1@main
+      - uses: actions/checkout@v4
+        with:
+          ref: main
 
-    
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install -r scripts/requirements.txt
+
+      - name: Generate and commit README
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3; do
+            # Refresh the disposable CI checkout before each generation attempt.
+            git fetch origin main
+            git reset --hard FETCH_HEAD
+            python3 scripts/generate_readme.py
+            git add README.md
+            if git diff --cached --quiet; then
+              echo "README is already up to date."
+              exit 0
+            fi
+
+            git commit -m "docs: update blog article catalog"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+
+          echo "Could not push the README after 3 attempts." >&2
+          exit 1
