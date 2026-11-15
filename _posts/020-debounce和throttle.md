@@ -1,7 +1,6 @@
----
-title: debounce和throttle
-labels: JavaScript
----
+## debounce和throttle
+
+### 分类 JavaScript
 
 ## 1 防抖
 防抖适合的应用场景，比如搜索联想，电话号码验证等。只有在最后一次事件响应，再去请求资源。

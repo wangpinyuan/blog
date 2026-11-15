@@ -1,7 +1,6 @@
----
-title: 你不知道的JavaScript（中）
-labels: JavaScript
----
+## 你不知道的JavaScript（中）
+
+### 分类 JavaScript
 
 # 1 类型
 ## 1.1 js有七种内置类型

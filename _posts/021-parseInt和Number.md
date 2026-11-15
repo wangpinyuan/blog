@@ -1,7 +1,6 @@
----
-title: parseInt和Number
-labels: JavaScript
----
+## parseInt和Number
+
+### 分类 JavaScript
 
 ```     
 console.log(parseInt("0123")); // 123

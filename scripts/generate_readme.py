@@ -19,7 +19,19 @@ def escape_markdown(value):
 
 def read_metadata(path):
     lines = path.read_text(encoding="utf-8-sig").splitlines()
-    if not lines or lines[0].strip() != "---":
+    if not lines:
+        return {}
+
+    title_heading = re.fullmatch(r"##[ \t]+(.+)", lines[0])
+    if title_heading:
+        metadata = {"title": title_heading.group(1).strip()}
+        next_line = next((line for line in lines[1:] if line.strip()), "")
+        category_heading = re.fullmatch(r"###[ \t]+分类[ \t]+(.+)", next_line)
+        if category_heading:
+            metadata["labels"] = category_heading.group(1).strip()
+        return metadata
+
+    if lines[0].strip() != "---":
         return {}
 
     try:

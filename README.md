@@ -2,7 +2,7 @@
 
 ## 文章目录
 
-<!-- 目录由 scripts/generate_readme.py 根据文章的 title 和 labels 自动生成。 -->
+<!-- 目录由 scripts/generate_readme.py 根据文章开头的标题和分类自动生成。 -->
 <!-- BLOG-POST-LIST:START -->
 
 ### CSS

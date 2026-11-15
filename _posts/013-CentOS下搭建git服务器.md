@@ -1,7 +1,6 @@
----
-title: CentOS下搭建git服务器
-labels: 工具类
----
+## CentOS下搭建git服务器
+
+### 分类 工具类
 
 ###踩了几个坑
 - Linux权限
