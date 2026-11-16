@@ -1,6 +1,6 @@
 ## React Hooks 入门指南
 
-### 分类 工具类
+### 分类 React
 
 ## 一、Hook
 - useState
@@ -26,9 +26,15 @@ useEffect(() => {
 }, [count]);
 在第一次渲染和count更新后执行
 ```
+依赖项变化监测机制
+Object.is
+避免竞态条件
+AboutController
+
+
 - useContext 
 - 普通父子传值用 props，但如果要跨多层组件（爷→孙→曾孙）一层层传 props 会非常麻烦（prop drilling 问题）。
-- useContext 让你在任意层级的组件里直接拿到全局数据，不用层层传递。
+- createContext,useContext 让你在任意层级的组件里直接拿到全局数据，不用层层传递。
 ```
 第 1 步：创建 Context
 // ThemeContext.js
@@ -86,15 +92,19 @@ function InputFocus() {
 - useCallback
 - 缓存函数，避免重复计算
 ```
+useEffect(() => {
+  a()
+}, [a]);
 const handleClick = useCallback(() => {
-  console.log('点击了')
-}, [])
+  a()
+}, [a_id])
 ```
 - useMemo
 - 缓存计算结果，避免重复计算
-- 搭配 useCallback 使用
 ```
 const result = useMemo(() => {
   return count * 2
 }, [count])
 ```
+useMemo和useCallback需要内存来储存缓存，不可滥用
+   
